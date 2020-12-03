@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using Abp.Authorization.Users;
 using Abp.Extensions;
+using RChat.UserPerRelations;
 
 namespace RChat.Authorization.Users
 {
@@ -30,5 +32,12 @@ namespace RChat.Authorization.Users
 
             return user;
         }
+
+        [InverseProperty("Sender")]
+        public virtual ICollection<UserPerRelation> SenderUser { get; set; }
+
+
+        [InverseProperty("Receiver")]
+        public virtual ICollection<UserPerRelation> ReceiverUser { get; set; }
     }
 }

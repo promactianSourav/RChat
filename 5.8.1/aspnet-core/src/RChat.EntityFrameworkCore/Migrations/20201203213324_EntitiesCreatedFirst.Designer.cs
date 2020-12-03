@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RChat.EntityFrameworkCore;
 
 namespace RChat.Migrations
 {
     [DbContext(typeof(RChatDbContext))]
-    partial class RChatDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201203213324_EntitiesCreatedFirst")]
+    partial class EntitiesCreatedFirst
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

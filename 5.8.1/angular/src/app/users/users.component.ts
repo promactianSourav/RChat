@@ -1,3 +1,4 @@
+import { state } from '@angular/animations';
 import { Component, Injector } from '@angular/core';
 import { finalize } from 'rxjs/operators';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
@@ -14,7 +15,8 @@ import {
 import { CreateUserDialogComponent } from './create-user/create-user-dialog.component';
 import { EditUserDialogComponent } from './edit-user/edit-user-dialog.component';
 import { ResetPasswordDialogComponent } from './reset-password/reset-password.component';
-
+import * as signalR from '@aspnet/signalr'
+import { AppConsts } from '@shared/AppConsts';
 class PagedUsersRequestDto extends PagedRequestDto {
   keyword: string;
   isActive: boolean | null;
@@ -38,7 +40,46 @@ export class UsersComponent extends PagedListingComponentBase<UserDto> {
     super(injector);
   }
 
+  private hubConnection : signalR.HubConnection;
   createUser(): void {
+  //   abp.signalr = {
+  //     autoConnect: true,
+  //     connect: undefined,
+  //     hubs: undefined,
+  //     qs: AppConsts.authorization.encryptedAuthTokenName + '=' + encodeURIComponent(encryptedAuthToken),
+  //     remoteServiceBaseUrl: AppConsts.remoteServiceBaseUrl,
+  //     startConnection: undefined,
+  //     url: '/signalr'
+  // };
+
+
+    // this.hubConnection = new signalR.HubConnectionBuilder()
+    // .withUrl(AppConsts.remoteServiceBaseUrl + "/signalr")
+    // .build();
+
+    
+    // this.hubConnection.start()
+    //   .then(() => console.log("Connected.")
+    //   ).catch(err => console.log('Error while starting connection: '+err)
+    //   );
+    // console.log(AppConsts.remoteServiceBaseUrl + "/signalr");
+    
+    // console.log(this.hubConnection.state+"ok");
+    // console.log(signalR.HubConnectionState.Disconnected+"ok2");
+    
+    
+    // if(this.hubConnection.state === signalR.HubConnectionState.Connected){
+    //   console.log("Hello ! Its connected.");
+    //   this.hubConnection.stop();
+      
+    // }else{
+    //   console.log("Oh! Its disconnected.");
+    //   this.hubConnection.start()
+    //   .then(() => console.log("Connected Again.")
+    //   ).catch(err => console.log('Error while starting connection: '+err)
+    //   );
+      
+    // }
     this.showCreateOrEditUserDialog();
   }
 
