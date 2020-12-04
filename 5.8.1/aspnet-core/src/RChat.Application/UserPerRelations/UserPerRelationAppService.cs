@@ -82,5 +82,12 @@ namespace RChat.UserPerRelations
         {
             identityResult.CheckErrors(LocalizationManager);
         }
+
+        public async Task<GetUserPerRelationOutput> GetUserPerRelationForSenderAndReceiver(int senderId, int receiverId)
+        {
+            var getUserPerRelation = await userPerRelationManager.GetUserPerRelationForSenderAndReceiver(senderId, receiverId);
+            var output = mapper.Map<UserPerRelation,GetUserPerRelationOutput>(getUserPerRelation);
+            return output;
+        }
     }
 }

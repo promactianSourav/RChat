@@ -435,6 +435,71 @@ export class MessageServiceProxy {
     }
 
     /**
+     * @param userPerRelationOne (optional) 
+     * @param userPerRelationTwo (optional) 
+     * @return Success
+     */
+    getAllForBothUser(userPerRelationOne: number | undefined, userPerRelationTwo: number | undefined): Observable<GetMessageOutput[]> {
+        let url_ = this.baseUrl + "/api/services/app/Message/GetAllForBothUser?";
+        if (userPerRelationOne === null)
+            throw new Error("The parameter 'userPerRelationOne' cannot be null.");
+        else if (userPerRelationOne !== undefined)
+            url_ += "userPerRelationOne=" + encodeURIComponent("" + userPerRelationOne) + "&";
+        if (userPerRelationTwo === null)
+            throw new Error("The parameter 'userPerRelationTwo' cannot be null.");
+        else if (userPerRelationTwo !== undefined)
+            url_ += "userPerRelationTwo=" + encodeURIComponent("" + userPerRelationTwo) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllForBothUser(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllForBothUser(<any>response_);
+                } catch (e) {
+                    return <Observable<GetMessageOutput[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetMessageOutput[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllForBothUser(response: HttpResponseBase): Observable<GetMessageOutput[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200.push(GetMessageOutput.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetMessageOutput[]>(<any>null);
+    }
+
+    /**
      * @param id (optional) 
      * @return Success
      */
@@ -2295,6 +2360,67 @@ export class UserPerRelationServiceProxy {
             }));
         }
         return _observableOf<GetUserPerRelationOutput[]>(<any>null);
+    }
+
+    /**
+     * @param senderId (optional) 
+     * @param receiverId (optional) 
+     * @return Success
+     */
+    getUserPerRelationForSenderAndReceiver(senderId: number | undefined, receiverId: number | undefined): Observable<GetUserPerRelationOutput> {
+        let url_ = this.baseUrl + "/api/services/app/UserPerRelation/GetUserPerRelationForSenderAndReceiver?";
+        if (senderId === null)
+            throw new Error("The parameter 'senderId' cannot be null.");
+        else if (senderId !== undefined)
+            url_ += "senderId=" + encodeURIComponent("" + senderId) + "&";
+        if (receiverId === null)
+            throw new Error("The parameter 'receiverId' cannot be null.");
+        else if (receiverId !== undefined)
+            url_ += "receiverId=" + encodeURIComponent("" + receiverId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetUserPerRelationForSenderAndReceiver(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetUserPerRelationForSenderAndReceiver(<any>response_);
+                } catch (e) {
+                    return <Observable<GetUserPerRelationOutput>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetUserPerRelationOutput>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetUserPerRelationForSenderAndReceiver(response: HttpResponseBase): Observable<GetUserPerRelationOutput> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = GetUserPerRelationOutput.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetUserPerRelationOutput>(<any>null);
     }
 
     /**

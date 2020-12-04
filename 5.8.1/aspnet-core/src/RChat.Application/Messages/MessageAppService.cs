@@ -82,6 +82,13 @@ namespace RChat.Messages
         {
             identityResult.CheckErrors(LocalizationManager);
         }
+
+        public IEnumerable<GetMessageOutput> GetAllForBothUser(int userPerRelationOne, int userPerRelationTwo)
+        {
+            var getAll = messageManager.GetAllForBothUser(userPerRelationOne, userPerRelationTwo).ToList();
+            var output = mapper.Map<List<Message>, List<GetMessageOutput>>(getAll);
+            return output;
+        }
     }
 }
 

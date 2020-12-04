@@ -20,11 +20,12 @@ namespace RChat.UserPerRelations
 
         public async Task<UserPerRelation> CreateUserPerRelation(UserPerRelation entity)
         {
-            var userPerRelation = repositoryUserPerRelation.FirstOrDefault(x => x.Id == entity.Id);
+            var userPerRelation = repositoryUserPerRelation.FirstOrDefault(x => x.ReceiverId == entity.ReceiverId && x.SenderId == entity.SenderId);
 
             if(userPerRelation != null)
             {
-                throw new UserFriendlyException("Already Exist.");
+                //throw new UserFriendlyException("Already Exist.");
+                return await GetUserPerRelationById(userPerRelation.Id);
             }
 
             return await repositoryUserPerRelation.InsertAsync(entity);
@@ -54,6 +55,11 @@ namespace RChat.UserPerRelations
         public async Task<UserPerRelation> GetUserPerRelationById(int id)
         {
             return await repositoryUserPerRelation.GetAsync(id);
+        }
+
+        public async Task<UserPerRelation> GetUserPerRelationForSenderAndReceiver(int senderId, int receiverId)
+        {
+            return await repositoryUserPerRelation.FirstOrDefaultAsync(x => x.SenderId == senderId && x.ReceiverId == receiverId);
         }
 
         public async Task<UserPerRelation> UpdateUserPerRelation(UserPerRelation entity)

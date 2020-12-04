@@ -10,6 +10,7 @@ namespace RChat.UserPerRelations
     {
         IEnumerable<UserPerRelation> GetAllList();
         Task<UserPerRelation> GetUserPerRelationById(int id);
+        Task<UserPerRelation> GetUserPerRelationForSenderAndReceiver(int senderId,int receiverId);
 
         Task<UserPerRelation> CreateUserPerRelation(UserPerRelation entity);
         Task<UserPerRelation> UpdateUserPerRelation(UserPerRelation entity);
