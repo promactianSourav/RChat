@@ -1,3 +1,4 @@
+import { ChatsComponent } from './chats/chats.component';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
@@ -19,6 +20,7 @@ import { ChangePasswordComponent } from './users/change-password/change-password
                     { path: 'home', component: HomeComponent,  canActivate: [AppRouteGuard] },
                     { path: 'users', component: UsersComponent, data: { permission: 'Pages.Users' }, canActivate: [AppRouteGuard] },
                     { path: 'roles', component: RolesComponent, data: { permission: 'Pages.Roles' }, canActivate: [AppRouteGuard] },
+                    { path: 'chats', component: ChatsComponent, canActivate: [AppRouteGuard] },
                     { path: 'tenants', component: TenantsComponent, data: { permission: 'Pages.Tenants' }, canActivate: [AppRouteGuard] },
                     { path: 'about', component: AboutComponent },
                     { path: 'update-password', component: ChangePasswordComponent }

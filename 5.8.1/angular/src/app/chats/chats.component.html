@@ -1,22 +1,22 @@
 <div [@routerTransition]>
     <section class="content-header">
-        <div class="container-fluid">
+        <div class="container-12">
             <div class="row">
                 <div class="col-6">
-                    <h1>{{ "Users" | localize }}</h1>
+                    <h1>{{ "Chats" | localize }}</h1>
                 </div>
-                <div class="col-6 text-right">
+                <!-- <div class="col-6 text-right">
                     <a href="javascript:;" class="btn bg-blue" (click)="createUser()">
                         <i class="fa fa-plus-square"></i> {{ "Create" | localize }}
                     </a>
-                </div>
+                </div> -->
             </div>
         </div>
     </section>
     <section class="content px-2">
         <div class="container-fluid">
-            <div class="card">
-                <div class="card-header">
+            <div class="row">
+                <!-- <div class="card-header">
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <button type="button" class="btn bg-blue" (click)="getDataPage(1)">
@@ -77,57 +77,68 @@
               </button>
                         </div>
                     </div>
+                </div> -->
+                <div class="col-2">
+                    <div class="leftside no-gutters">
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-hover text-nowrap" [busy]="isTableLoading">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th>{{ "UserName" | localize }}</th>
+                                        <!-- <th>{{ "FullName" | localize }}</th>
+                                        <th>{{ "EmailAddress" | localize }}</th>
+                                        <th>{{ "IsActive" | localize }}</th>
+                                        <th style="width: 310px;">{{ "Actions" | localize }}</th> -->
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="
+                          let user of users
+                            | paginate
+                              : {
+                                  id: 'server',
+                                  itemsPerPage: pageSize,
+                                  currentPage: pageNumber,
+                                  totalItems: totalItems
+                                }
+                        ">
+                                        <td (click)="startchat(user)">{{ user.userName }}</td>
+                                        <!-- <td>{{ user.fullName }}</td>
+                                        <td>{{ user.emailAddress }}</td>
+                                        <td>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" disabled [checked]="user.isActive" />
+                                                <label class="custom-control-label"></label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm bg-secondary" (click)="editUser(user)">
+                            <i class="fas fa-pencil-alt"></i>
+                            {{ "Edit" | localize }}
+                          </button>
+                                            <button type="button" class="btn btn-sm bg-danger mx-2" (click)="delete(user)">
+                            <i class="fas fa-trash"></i>
+                            {{ "Delete" | localize }}
+                          </button>
+                                            <button type="button" class="btn btn-sm bg-secondary" (click)="resetPassword(user)">
+                            <i class="fas fa-lock"></i>
+                            {{ "ResetPassword" | localize }}
+                          </button>
+                                        </td> -->
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body table-responsive p-0">
-                    <table class="table table-hover text-nowrap" [busy]="isTableLoading">
-                        <thead class="bg-light">
-                            <tr>
-                                <th>{{ "UserName" | localize }}</th>
-                                <th>{{ "FullName" | localize }}</th>
-                                <th>{{ "EmailAddress" | localize }}</th>
-                                <th>{{ "IsActive" | localize }}</th>
-                                <th style="width: 310px;">{{ "Actions" | localize }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="
-                  let user of users
-                    | paginate
-                      : {
-                          id: 'server',
-                          itemsPerPage: pageSize,
-                          currentPage: pageNumber,
-                          totalItems: totalItems
-                        }
-                ">
-                                <td>{{ user.userName }}</td>
-                                <td>{{ user.fullName }}</td>
-                                <td>{{ user.emailAddress }}</td>
-                                <td>
-                                    <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input" disabled [checked]="user.isActive" />
-                                        <label class="custom-control-label"></label>
-                                    </div>
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-sm bg-secondary" (click)="editUser(user)">
-                    <i class="fas fa-pencil-alt"></i>
-                    {{ "Edit" | localize }}
-                  </button>
-                                    <button type="button" class="btn btn-sm bg-danger mx-2" (click)="delete(user)">
-                    <i class="fas fa-trash"></i>
-                    {{ "Delete" | localize }}
-                  </button>
-                                    <button type="button" class="btn btn-sm bg-secondary" (click)="resetPassword(user)">
-                    <i class="fas fa-lock"></i>
-                    {{ "ResetPassword" | localize }}
-                  </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+
+
+                <div class="col-10">
+                    <div class="rightside no-gutters">
+                        <div class="card-body table-responsive p-0">Welcome</div>
+                    </div>
                 </div>
-                <div class="card-footer bg-light border-top">
+                <!-- <div class="card-footer bg-light border-top">
                     <div class="row">
                         <div class="col-sm-4 col-12 text-sm-left text-center">
                             <button class="btn btn-secondary" (click)="refresh()">
@@ -146,7 +157,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </section>
