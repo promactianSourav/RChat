@@ -30,7 +30,7 @@ namespace RChat.UserPerRelations
             return await repositoryUserPerRelation.InsertAsync(entity);
         }
 
-        public void DeleteUserPerRelation(int id)
+        public Task DeleteUserPerRelation(int id)
         {
             var userPerRelation = repositoryUserPerRelation.FirstOrDefault(x => x.Id == id);
             if(userPerRelation == null)
@@ -39,11 +39,11 @@ namespace RChat.UserPerRelations
             }
             else
             {
-                repositoryUserPerRelation.Delete(userPerRelation);
+               return repositoryUserPerRelation.DeleteAsync(userPerRelation);
             }
         }
 
-        public  IEnumerable<UserPerRelation> GetAll()
+        public  IEnumerable<UserPerRelation> GetAllList()
         {
             return repositoryUserPerRelation.GetAllList();
             
@@ -56,9 +56,9 @@ namespace RChat.UserPerRelations
             return await repositoryUserPerRelation.GetAsync(id);
         }
 
-        public void UpdateUserPerRelation(UserPerRelation entity)
+        public async Task<UserPerRelation> UpdateUserPerRelation(UserPerRelation entity)
         {
-            repositoryUserPerRelation.Update(entity);
+           return await repositoryUserPerRelation.UpdateAsync(entity);
         }
     }
 }

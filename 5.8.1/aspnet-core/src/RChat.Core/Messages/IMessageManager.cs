@@ -8,11 +8,11 @@ namespace RChat.Messages
 {
     public interface IMessageManager : IDomainService
     {
-        IEnumerable<Message> GetAll();
+        IEnumerable<Message> GetAllList();
         Task<Message> GetMessageById(int id);
 
         Task<Message> CreateMessage(Message entity);
-        void UpdateMessage(Message entity);
-        void DeleteMessage(int id);
+        Task<Message> UpdateMessage(Message entity);
+        Task DeleteMessage(int id);
     }
 }

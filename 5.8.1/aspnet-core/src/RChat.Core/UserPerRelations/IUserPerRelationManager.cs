@@ -8,11 +8,11 @@ namespace RChat.UserPerRelations
 {
     public interface IUserPerRelationManager : IDomainService
     {
-        IEnumerable<UserPerRelation> GetAll();
+        IEnumerable<UserPerRelation> GetAllList();
         Task<UserPerRelation> GetUserPerRelationById(int id);
 
         Task<UserPerRelation> CreateUserPerRelation(UserPerRelation entity);
-        void UpdateUserPerRelation(UserPerRelation entity);
-        void DeleteUserPerRelation(int id);
+        Task<UserPerRelation> UpdateUserPerRelation(UserPerRelation entity);
+        Task DeleteUserPerRelation(int id);
     }
 }

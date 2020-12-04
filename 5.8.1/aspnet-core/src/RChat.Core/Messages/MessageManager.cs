@@ -30,7 +30,7 @@ namespace RChat.Messages
             return await repositoryMessage.InsertAsync(entity);
         }
 
-        public void DeleteMessage(int id)
+        public Task DeleteMessage(int id)
         {
             var message = repositoryMessage.FirstOrDefault(x => x.Id == id);
             if (message == null)
@@ -39,11 +39,11 @@ namespace RChat.Messages
             }
             else
             {
-                repositoryMessage.Delete(message);
+                return repositoryMessage.DeleteAsync(message);
             }
         }
 
-        public IEnumerable<Message> GetAll()
+        public IEnumerable<Message> GetAllList()
         {
             return repositoryMessage.GetAllList();
 
@@ -56,9 +56,9 @@ namespace RChat.Messages
             return await repositoryMessage.GetAsync(id);
         }
 
-        public void UpdateMessage(Message entity)
+        public async Task<Message> UpdateMessage(Message entity)
         {
-            repositoryMessage.Update(entity);
+            return await repositoryMessage.UpdateAsync(entity);
         }
     }
 }

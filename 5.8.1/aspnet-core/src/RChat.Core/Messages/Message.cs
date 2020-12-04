@@ -18,6 +18,6 @@ namespace RChat.Messages
         public virtual UserPerRelation UserPerRelation { get; set; }
 
         public Boolean IsRead { get; set; }
-        public DateTime CreationTime { get; set; }
+        //public DateTime CreationTime { get; set; }
     }
 }
