@@ -10,7 +10,9 @@ using Abp.Domain.Repositories;
 using Abp.IdentityFramework;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using RChat.Messages.Dto;
+using RChat.UserPerRelations;
 
 namespace RChat.Messages
 {
@@ -19,17 +21,38 @@ namespace RChat.Messages
     {
         private readonly IMessageManager messageManager;
         private readonly IMapper mapper;
+        private readonly IHubContext<ChatHub> hubContext;
+        private readonly IUserPerRelationManager userPerRelationManager;
 
-        public MessageAppService(IRepository<Message> repository, IMessageManager messageManager, IMapper mapper) : base(repository)
+        public MessageAppService(IRepository<Message> repository, IMessageManager messageManager, IMapper mapper,IHubContext<ChatHub> hubContext,IUserPerRelationManager userPerRelationManager) : base(repository)
         {
             this.messageManager = messageManager;
             this.mapper = mapper;
+            this.hubContext = hubContext;
+            this.userPerRelationManager = userPerRelationManager;
         }
 
         public override async Task<MessageDto> CreateAsync(CreateMessageInput input)
         {
             var entity = mapper.Map<CreateMessageInput, Message>(input);
             var output = await messageManager.CreateMessage(entity);
+
+            //int v2 = output.UserPerRelationId == null ? 1:output.UserPerRelationId;
+            int v2 = output.UserPerRelationId ?? 0;
+
+            if (output != null)
+            {
+                MessageSignal msg = new MessageSignal();
+                
+                msg.MessageReceiverId =  userPerRelationManager.GetSingleUserPerRelation(v2).ReceiverId;
+                msg.MessageUnReadCount = messageManager.GetAllListForUnReadMessages(v2).ToList().Count;
+
+                long r = userPerRelationManager.GetSingleUserPerRelation(v2).SenderId ?? 0;
+                long s = userPerRelationManager.GetSingleUserPerRelation(v2).ReceiverId ?? 0;
+                msg.MessageCurrentUserPerRelationId = userPerRelationManager.GetUserPerRelationForSenderAndReceiver(s, r).Id;
+                msg.MessageDescription = output.MessageContent;
+                await hubContext.Clients.All.SendAsync("checkMessage", msg);
+            }
             var returnDto = mapper.Map<Message, MessageDto>(output);
             return returnDto;
         }
@@ -88,6 +111,11 @@ namespace RChat.Messages
             var getAll = messageManager.GetAllForBothUser(userPerRelationOne, userPerRelationTwo).ToList();
             var output = mapper.Map<List<Message>, List<GetMessageOutput>>(getAll);
             return output;
+        }
+
+        public void UpdateUnReadMessageToRead(int userPerRelationId)
+        {
+            messageManager.UpdateUnReadMessageToRead(userPerRelationId);
         }
     }
 }

@@ -10,6 +10,7 @@ namespace RChat.UserPerRelations
     public interface IUserPerRelationAppService : IApplicationService
     {
         IEnumerable<GetUserPerRelationOutput> ListAll();
-        Task<GetUserPerRelationOutput> GetUserPerRelationForSenderAndReceiver(int senderId,int receiverId);
+        GetUserPerRelationOutput GetSingleUserPerRelation(int id);
+        Task<GetUserPerRelationOutput> GetUserPerRelationForSenderAndReceiver(long senderId,long receiverId);
     }
 }

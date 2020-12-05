@@ -54,6 +54,7 @@ namespace RChat.UserPerRelations
         {
             
             var output = userPerRelationManager.GetUserPerRelationById(id);
+            
             //var returnDto = mapper.Map<Task<UserPerRelation>, Task<UserPerRelationDto>>(output);
             return output;
             //return base.GetEntityByIdAsync(id);
@@ -83,10 +84,17 @@ namespace RChat.UserPerRelations
             identityResult.CheckErrors(LocalizationManager);
         }
 
-        public async Task<GetUserPerRelationOutput> GetUserPerRelationForSenderAndReceiver(int senderId, int receiverId)
+        public async Task<GetUserPerRelationOutput> GetUserPerRelationForSenderAndReceiver(long senderId, long receiverId)
         {
             var getUserPerRelation = await userPerRelationManager.GetUserPerRelationForSenderAndReceiver(senderId, receiverId);
             var output = mapper.Map<UserPerRelation,GetUserPerRelationOutput>(getUserPerRelation);
+            return output;
+        }
+
+        public GetUserPerRelationOutput GetSingleUserPerRelation(int id)
+        {
+            var getUserPerRelation =  userPerRelationManager.GetSingleUserPerRelation(id);
+            var output = mapper.Map<UserPerRelation, GetUserPerRelationOutput>(getUserPerRelation);
             return output;
         }
     }

@@ -9,6 +9,7 @@ namespace RChat.Messages
     public interface IMessageAppService : IApplicationService
     {
         IEnumerable<GetMessageOutput> ListAll();
+        void UpdateUnReadMessageToRead(int userPerRelationId);
         IEnumerable<GetMessageOutput> GetAllForBothUser(int userPerRelationOne, int userPerRelationTwo);
         
     }

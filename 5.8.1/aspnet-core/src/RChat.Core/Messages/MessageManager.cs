@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Abp.Domain.Repositories;
 using Abp.Domain.Services;
+using Abp.Domain.Uow;
 using Abp.Timing;
 using Abp.UI;
 using RChat.UserPerRelations;
@@ -156,7 +157,11 @@ namespace RChat.Messages
 
         }
 
-
+        public IEnumerable<Message> GetAllListForUnReadMessages(int userPerRelationId)
+        {
+            var list = repositoryMessage.GetAllList().Where(x => x.IsRead == false);
+            return list;
+        }
 
         public async Task<Message> GetMessageById(int id)
         {
@@ -166,6 +171,17 @@ namespace RChat.Messages
         public async Task<Message> UpdateMessage(Message entity)
         {
             return await repositoryMessage.UpdateAsync(entity);
+        }
+
+        [UnitOfWork]
+        public void UpdateUnReadMessageToRead(int userPerRelationId)
+        {
+            
+            var list = repositoryMessage.GetAll().Where(x => x.UserPerRelationId == userPerRelationId && x.IsRead == false);
+            foreach(var m in list)
+            {
+                m.IsRead = true;
+            }
         }
     }
 }

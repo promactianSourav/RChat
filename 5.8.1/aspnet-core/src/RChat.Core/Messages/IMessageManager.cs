@@ -9,6 +9,8 @@ namespace RChat.Messages
     public interface IMessageManager : IDomainService
     {
         IEnumerable<Message> GetAllList();
+        IEnumerable<Message> GetAllListForUnReadMessages(int userPerRelationId);
+        void UpdateUnReadMessageToRead(int userPerRelationId);
         IEnumerable<Message> GetAllForBothUser(int userPerRelationOne,int userPerRelationTwo);
         Task<Message> GetMessageById(int id);
 

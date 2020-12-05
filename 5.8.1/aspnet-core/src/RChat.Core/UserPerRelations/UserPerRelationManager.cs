@@ -50,14 +50,17 @@ namespace RChat.UserPerRelations
             
         }
 
-
+        public UserPerRelation GetSingleUserPerRelation(int id)
+        {
+            return repositoryUserPerRelation.Get(id);
+        }
 
         public async Task<UserPerRelation> GetUserPerRelationById(int id)
         {
             return await repositoryUserPerRelation.GetAsync(id);
         }
 
-        public async Task<UserPerRelation> GetUserPerRelationForSenderAndReceiver(int senderId, int receiverId)
+        public async Task<UserPerRelation> GetUserPerRelationForSenderAndReceiver(long senderId, long receiverId)
         {
             return await repositoryUserPerRelation.FirstOrDefaultAsync(x => x.SenderId == senderId && x.ReceiverId == receiverId);
         }

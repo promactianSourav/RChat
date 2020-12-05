@@ -1,3 +1,5 @@
+import { MessageSignal } from './../../shared/Models/MessageSignal';
+import { ChatServiceService } from './../../shared/services/chat-service.service';
 import { UserDto, UserServiceProxy, UserPerRelationServiceProxy, MessageServiceProxy, UserDtoPagedResultDto, GetMessageOutput, CreateMessageInput, CreateUserPerRelationInput, GetUserPerRelationOutput } from './../../shared/service-proxies/service-proxies';
 import { Component, Injector, OnInit } from '@angular/core';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
@@ -22,6 +24,7 @@ export class ChatsComponent extends PagedListingComponentBase<UserDto> {
   users: UserDto[] = [];
   messages:GetMessageOutput[] = [];
   getMsg:GetMessageOutput = new GetMessageOutput();
+  getSignalMsg:GetMessageOutput = new GetMessageOutput();
   userPerRelationForChatOne:CreateUserPerRelationInput = new CreateUserPerRelationInput();
   userPerRelationForChatTwo:CreateUserPerRelationInput = new CreateUserPerRelationInput();
   getUserPerRealtionForgettingMessagesOne:GetUserPerRelationOutput = new GetUserPerRelationOutput();
@@ -31,6 +34,10 @@ export class ChatsComponent extends PagedListingComponentBase<UserDto> {
    cmsg:CreateMessageInput = new CreateMessageInput();
   senderId:number = null;
   receiverId:number = null;
+
+  noti:string="";
+  count:string="";
+  notiUserId:number=0;
   
   keyword = '';
 
@@ -39,11 +46,13 @@ export class ChatsComponent extends PagedListingComponentBase<UserDto> {
     private _usersService: UserServiceProxy,
     private _userPerRelationsService: UserPerRelationServiceProxy,
     private _messagesService: MessageServiceProxy,
-    private _modalService: BsModalService
+    private _modalService: BsModalService,
+    private _chatService: ChatServiceService
   ) {
     super(injector);
   }
 
+  
   list(
     request: PagedUsersRequestDto,
     pageNumber: number,
@@ -109,7 +118,6 @@ export class ChatsComponent extends PagedListingComponentBase<UserDto> {
           this._userPerRelationsService.getUserPerRelationForSenderAndReceiver(response.senderId,response.receiverId))
       );
 
-
       const second = this._userPerRelationsService.create(this.userPerRelationForChatTwo).pipe(
         map(response =>{
           console.log(response);
@@ -120,6 +128,8 @@ export class ChatsComponent extends PagedListingComponentBase<UserDto> {
             this._userPerRelationsService.getUserPerRelationForSenderAndReceiver(response.senderId,response.receiverId))
         );
 
+    
+
 
          forkJoin([first,second]).pipe(
           map(response =>{
@@ -127,20 +137,42 @@ export class ChatsComponent extends PagedListingComponentBase<UserDto> {
             console.log(response);
             return response;
           }),
-            mergeMap(response => 
+            mergeMap(response => {
+              const third = this._messagesService.updateUnReadMessageToRead(response[0].id);
+              const fourth =this._messagesService.getAllForBothUser(response[0].id,response[1].id);
               
-              this._messagesService.getAllForBothUser(response[0].id,response[1].id))
+              return forkJoin([third,fourth]);
+            })
           ).subscribe(res =>{
             console.log(res);
             
-            res.forEach(element => {
+            res[1].forEach(element => {
               if(element.isRead==false){
                 element.isRead = true;
               }
             });
-            this.messages = res;
+            this.messages = res[1];
           });
 
+          this._chatService.signalReceived.subscribe((msg:MessageSignal)=>{
+            console.log("Your message arrived: "+msg);
+            console.log(msg.messageCurrentUserPerRelationId);
+            console.log(msg.messageDescription);
+            console.log(msg.messageReceiverId);
+            console.log(msg.messageUnReadCount);
+            if(this.cmsg.userPerRelationId==msg.messageCurrentUserPerRelationId){
+              this.getSignalMsg.id = 0;
+              this.getSignalMsg.userPerRelationId = 0;
+              this.getSignalMsg.isRead = true;
+              this.getSignalMsg.messageContent = msg.messageDescription;
+              this.messages.push(this.getSignalMsg);
+            }else{
+              this.notiUserId = msg.messageReceiverId;
+              this.count = msg.messageUnReadCount.toString();
+            }
+            
+            
+          });
 
     // this._userPerRelationsService.create(this.userPerRelationForChatOne).subscribe((response) => {
     //   console.log(response);

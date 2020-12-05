@@ -500,6 +500,58 @@ export class MessageServiceProxy {
     }
 
     /**
+     * @param userPerRelationId (optional) 
+     * @return Success
+     */
+    updateUnReadMessageToRead(userPerRelationId: number | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Message/UpdateUnReadMessageToRead?";
+        if (userPerRelationId === null)
+            throw new Error("The parameter 'userPerRelationId' cannot be null.");
+        else if (userPerRelationId !== undefined)
+            url_ += "userPerRelationId=" + encodeURIComponent("" + userPerRelationId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdateUnReadMessageToRead(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdateUnReadMessageToRead(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUpdateUnReadMessageToRead(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
      * @param id (optional) 
      * @return Success
      */
@@ -2402,6 +2454,62 @@ export class UserPerRelationServiceProxy {
     }
 
     protected processGetUserPerRelationForSenderAndReceiver(response: HttpResponseBase): Observable<GetUserPerRelationOutput> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = GetUserPerRelationOutput.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetUserPerRelationOutput>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    getSingleUserPerRelation(id: number | undefined): Observable<GetUserPerRelationOutput> {
+        let url_ = this.baseUrl + "/api/services/app/UserPerRelation/GetSingleUserPerRelation?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetSingleUserPerRelation(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetSingleUserPerRelation(<any>response_);
+                } catch (e) {
+                    return <Observable<GetUserPerRelationOutput>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetUserPerRelationOutput>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetSingleUserPerRelation(response: HttpResponseBase): Observable<GetUserPerRelationOutput> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :

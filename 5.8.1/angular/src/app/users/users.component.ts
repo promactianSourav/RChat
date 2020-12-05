@@ -15,7 +15,7 @@ import {
 import { CreateUserDialogComponent } from './create-user/create-user-dialog.component';
 import { EditUserDialogComponent } from './edit-user/edit-user-dialog.component';
 import { ResetPasswordDialogComponent } from './reset-password/reset-password.component';
-import * as signalR from '@aspnet/signalr'
+import * as signalR from '@aspnet/signalr';
 import { AppConsts } from '@shared/AppConsts';
 class PagedUsersRequestDto extends PagedRequestDto {
   keyword: string;
