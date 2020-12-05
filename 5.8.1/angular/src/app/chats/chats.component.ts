@@ -23,8 +23,8 @@ export class ChatsComponent extends PagedListingComponentBase<UserDto> {
   
   users: UserDto[] = [];
   messages:GetMessageOutput[] = [];
-  getMsg:GetMessageOutput = new GetMessageOutput();
-  getSignalMsg:GetMessageOutput = new GetMessageOutput();
+  getMsg:GetMessageOutput;
+  getSignalMsg:GetMessageOutput;
   userPerRelationForChatOne:CreateUserPerRelationInput = new CreateUserPerRelationInput();
   userPerRelationForChatTwo:CreateUserPerRelationInput = new CreateUserPerRelationInput();
   getUserPerRealtionForgettingMessagesOne:GetUserPerRelationOutput = new GetUserPerRelationOutput();
@@ -32,7 +32,9 @@ export class ChatsComponent extends PagedListingComponentBase<UserDto> {
   messageInput:string = "";
   user:UserDto = new UserDto();
    cmsg:CreateMessageInput = new CreateMessageInput();
-  senderId:number = null;
+   cmsg2:CreateMessageInput;
+   countReverseUserPerRelationId:number;
+  senderId:number = abp.session.userId;
   receiverId:number = null;
 
   noti:string="";
@@ -72,6 +74,37 @@ export class ChatsComponent extends PagedListingComponentBase<UserDto> {
       .subscribe((result: UserDtoPagedResultDto) => {
         this.users = result.items;
         this.showPaging(result, pageNumber);
+      });
+
+      this._chatService.signalReceived.subscribe((msg:MessageSignal)=>{
+        console.log("Your message arrived: "+msg);
+        console.log(msg.messageCurrentUserPerRelationId+"notcmsg");
+        console.log(msg.messageDescription);
+        console.log(msg.messageReceiverId);
+        console.log(msg.messageUnReadCount);
+        console.log(this.cmsg.userPerRelationId+"cmsg");
+        
+        
+        
+        if(this.cmsg.userPerRelationId==msg.messageCurrentUserPerRelationId){
+          this.getSignalMsg = new GetMessageOutput();
+          this.getSignalMsg.id = 0;
+          this.getSignalMsg.userPerRelationId = 0;
+          this.getSignalMsg.isRead = true;
+          this.getSignalMsg.messageContent = msg.messageDescription;
+          console.log(msg.messageDescription+"notimessage");
+          
+          this.messages.push(this.getSignalMsg);
+        }else{
+          this.notiUserId = msg.messageReceiverId;
+          this.count = msg.messageUnReadCount.toString();
+          // console.log(this.notiUserId);
+          // console.log(this.count);
+          
+          
+        }
+        
+        
       });
   }
 
@@ -134,45 +167,28 @@ export class ChatsComponent extends PagedListingComponentBase<UserDto> {
          forkJoin([first,second]).pipe(
           map(response =>{
             this.cmsg.userPerRelationId = response[0].id;
+            this.countReverseUserPerRelationId = response[1].id;
             console.log(response);
             return response;
           }),
             mergeMap(response => {
-              const third = this._messagesService.updateUnReadMessageToRead(response[0].id);
+              const third = this._messagesService.updateUnReadMessageToRead(response[1].id);
               const fourth =this._messagesService.getAllForBothUser(response[0].id,response[1].id);
               
               return forkJoin([third,fourth]);
             })
           ).subscribe(res =>{
             console.log(res);
-            
-            res[1].forEach(element => {
-              if(element.isRead==false){
-                element.isRead = true;
-              }
-            });
+            this.count = "";
+            // res[1].forEach(element => {
+            //   if(element.isRead==false && element.userPerRelationId == this.countReverseUserPerRelationId){
+            //     element.isRead = true;
+            //   }
+            // });
             this.messages = res[1];
           });
 
-          this._chatService.signalReceived.subscribe((msg:MessageSignal)=>{
-            console.log("Your message arrived: "+msg);
-            console.log(msg.messageCurrentUserPerRelationId);
-            console.log(msg.messageDescription);
-            console.log(msg.messageReceiverId);
-            console.log(msg.messageUnReadCount);
-            if(this.cmsg.userPerRelationId==msg.messageCurrentUserPerRelationId){
-              this.getSignalMsg.id = 0;
-              this.getSignalMsg.userPerRelationId = 0;
-              this.getSignalMsg.isRead = true;
-              this.getSignalMsg.messageContent = msg.messageDescription;
-              this.messages.push(this.getSignalMsg);
-            }else{
-              this.notiUserId = msg.messageReceiverId;
-              this.count = msg.messageUnReadCount.toString();
-            }
-            
-            
-          });
+         
 
     // this._userPerRelationsService.create(this.userPerRelationForChatOne).subscribe((response) => {
     //   console.log(response);
@@ -207,21 +223,27 @@ export class ChatsComponent extends PagedListingComponentBase<UserDto> {
   }
 
   sendMessage(){
-    this.cmsg.messageContent = this.messageInput;
-    this.cmsg.isRead = false;
+    console.log(this.messageInput+"msgINput");
+    this.cmsg2 = new CreateMessageInput();
+    this.cmsg2.messageContent = this.messageInput;
+    this.cmsg2.isRead = false;
+    this.cmsg2.userPerRelationId = this.cmsg.userPerRelationId;
+
+    
     // this._userPerRelationsService.getUserPerRelationForSenderAndReceiver(this.senderId,this.receiverId).subscribe((response) =>{
     //   this.cmsg.userPerRelationId = response.id;
     // });
 //     console.log(this.cmsg.userPerRelationId+" itsIdcsmg");
     
 // console.log(this.cmsg.messageContent+" itsmessage");
-
-    this._messagesService.create(this.cmsg).subscribe((response)=>{
-      this.getMsg.id = response.id;
-      this.getMsg.messageContent = response.messageContent;
-      this.getMsg.userPerRelationId = response.userPerRelationId;
-      this.getMsg.isRead = response.isRead;
-      this.messages.push(this.getMsg);
+this.getMsg = new GetMessageOutput();
+this.getMsg.id = 0;
+this.getMsg.messageContent = this.messageInput;
+this.getMsg.userPerRelationId = this.cmsg2.userPerRelationId;
+this.getMsg.isRead = true;
+this.messages.push(this.getMsg);
+    this._messagesService.create(this.cmsg2).subscribe((response)=>{
+     
     })
 
     

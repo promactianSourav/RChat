@@ -20,7 +20,7 @@ namespace RChat.UserPerRelations
 
         public async Task<UserPerRelation> CreateUserPerRelation(UserPerRelation entity)
         {
-            var userPerRelation = repositoryUserPerRelation.FirstOrDefault(x => x.ReceiverId == entity.ReceiverId && x.SenderId == entity.SenderId);
+            var userPerRelation = repositoryUserPerRelation.FirstOrDefault(x => x.ReceiverId == entity.ReceiverId && x.SenderId == entity.SenderId && x.IsDeleted==false);
 
             if(userPerRelation != null)
             {
@@ -33,7 +33,7 @@ namespace RChat.UserPerRelations
 
         public Task DeleteUserPerRelation(int id)
         {
-            var userPerRelation = repositoryUserPerRelation.FirstOrDefault(x => x.Id == id);
+            var userPerRelation = repositoryUserPerRelation.FirstOrDefault(x => x.Id == id && x.IsDeleted==false);
             if(userPerRelation == null)
             {
                 throw new UserFriendlyException("No Data Found.");
@@ -62,7 +62,11 @@ namespace RChat.UserPerRelations
 
         public async Task<UserPerRelation> GetUserPerRelationForSenderAndReceiver(long senderId, long receiverId)
         {
-            return await repositoryUserPerRelation.FirstOrDefaultAsync(x => x.SenderId == senderId && x.ReceiverId == receiverId);
+            return await repositoryUserPerRelation.FirstOrDefaultAsync(x => x.SenderId == senderId && x.ReceiverId == receiverId && x.IsDeleted==false);
+        }
+        public UserPerRelation GetUserPerRelationForSenderAndReceiverForMessage(long senderId, long receiverId)
+        {
+            return repositoryUserPerRelation.FirstOrDefault(x => x.SenderId == senderId && x.ReceiverId == receiverId && x.IsDeleted == false);
         }
 
         public async Task<UserPerRelation> UpdateUserPerRelation(UserPerRelation entity)

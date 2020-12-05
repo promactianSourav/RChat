@@ -26,7 +26,7 @@ namespace RChat.Messages
 
         public async Task<Message> CreateMessage(Message entity)
         {
-            var message = repositoryMessage.FirstOrDefault(x => x.Id == entity.Id);
+            var message = repositoryMessage.FirstOrDefault(x => x.Id == entity.Id && x.IsDeleted==false);
 
             if (message != null)
             {
@@ -38,7 +38,7 @@ namespace RChat.Messages
 
         public Task DeleteMessage(int id)
         {
-            var message = repositoryMessage.FirstOrDefault(x => x.Id == id);
+            var message = repositoryMessage.FirstOrDefault(x => x.Id == id && x.IsDeleted == false);
             if (message == null)
             {
                 throw new UserFriendlyException("No Data Found.");
@@ -157,9 +157,9 @@ namespace RChat.Messages
 
         }
 
-        public IEnumerable<Message> GetAllListForUnReadMessages(int userPerRelationId)
+        public IEnumerable<Message> GetAllListForUnReadMessages(long userPerRelationId)
         {
-            var list = repositoryMessage.GetAllList().Where(x => x.IsRead == false);
+            var list = repositoryMessage.GetAllList().Where(x => x.IsRead == false && x.UserPerRelationId == userPerRelationId);
             return list;
         }
 

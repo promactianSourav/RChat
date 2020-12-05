@@ -12,6 +12,7 @@ namespace RChat.UserPerRelations
         Task<UserPerRelation> GetUserPerRelationById(int id);
         UserPerRelation GetSingleUserPerRelation(int id);
         Task<UserPerRelation> GetUserPerRelationForSenderAndReceiver(long senderId,long receiverId);
+        UserPerRelation GetUserPerRelationForSenderAndReceiverForMessage(long senderId,long receiverId);
 
         Task<UserPerRelation> CreateUserPerRelation(UserPerRelation entity);
         Task<UserPerRelation> UpdateUserPerRelation(UserPerRelation entity);

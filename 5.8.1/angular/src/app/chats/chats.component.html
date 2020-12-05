@@ -102,7 +102,12 @@
                                   totalItems: totalItems
                                 }
                         ">
-                                        <td (click)="startchat(user)" *ngIf="user.id == notiUserId; then noti=count;else noti=''">{{ user.userName }}{{noti}}</td>
+                                        <td (click)="startchat(user)" *ngIf='user.id !== senderId'>{{ user.userName }}
+                                            <div *ngIf='user.id === notiUserId'>
+                                                {{count}}
+                                            </div>
+
+                                        </td>
                                         <!-- <td>{{ user.fullName }}</td>
                                         <td>{{ user.emailAddress }}</td>
                                         <td>
