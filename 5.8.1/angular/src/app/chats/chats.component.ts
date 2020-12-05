@@ -3,7 +3,8 @@ import { Component, Injector, OnInit } from '@angular/core';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { PagedListingComponentBase, PagedRequestDto } from '@shared/paged-listing-component-base';
 import { BsModalService } from 'ngx-bootstrap/modal';
-import { finalize } from 'rxjs/operators';
+import { finalize, map, mergeMap } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
 
 class PagedUsersRequestDto extends PagedRequestDto {
   keyword: string;
@@ -98,38 +99,90 @@ export class ChatsComponent extends PagedListingComponentBase<UserDto> {
     this.userPerRelationForChatTwo.senderId = this.receiverId;
     this.userPerRelationForChatTwo.receiverId = this.senderId;
     
-    this._userPerRelationsService.create(this.userPerRelationForChatOne).subscribe((response) => {
-      console.log(response);
+    const first = this._userPerRelationsService.create(this.userPerRelationForChatOne).pipe(
+      map(response =>{
+        console.log(response);
+        return response;
+        
+      }),
+        mergeMap(response => 
+          this._userPerRelationsService.getUserPerRelationForSenderAndReceiver(response.senderId,response.receiverId))
+      );
+
+
+      const second = this._userPerRelationsService.create(this.userPerRelationForChatTwo).pipe(
+        map(response =>{
+          console.log(response);
+          return response;
+          
+        }),
+          mergeMap(response => 
+            this._userPerRelationsService.getUserPerRelationForSenderAndReceiver(response.senderId,response.receiverId))
+        );
+
+
+         forkJoin([first,second]).pipe(
+          map(response =>{
+            this.cmsg.userPerRelationId = response[0].id;
+            console.log(response);
+            return response;
+          }),
+            mergeMap(response => 
+              
+              this._messagesService.getAllForBothUser(response[0].id,response[1].id))
+          ).subscribe(res =>{
+            console.log(res);
+            
+            res.forEach(element => {
+              if(element.isRead==false){
+                element.isRead = true;
+              }
+            });
+            this.messages = res;
+          });
+
+
+    // this._userPerRelationsService.create(this.userPerRelationForChatOne).subscribe((response) => {
+    //   console.log(response);
       
-    });
-    this._userPerRelationsService.create(this.userPerRelationForChatTwo).subscribe((response) => {
-      console.log(response);
+    // });
+    // this._userPerRelationsService.create(this.userPerRelationForChatTwo).subscribe((response) => {
+    //   console.log(response);
       
-    });
-    this._userPerRelationsService.getUserPerRelationForSenderAndReceiver(this.senderId,this.receiverId).subscribe((response)=>{
-      this.getUserPerRealtionForgettingMessagesOne = response;
-    });
-    this._userPerRelationsService.getUserPerRelationForSenderAndReceiver(this.receiverId,this.senderId).subscribe((response)=>{
-      this.getUserPerRealtionForgettingMessagesTwo = response;
-    })
-    this._messagesService.getAllForBothUser(this.getUserPerRealtionForgettingMessagesOne.id,this.getUserPerRealtionForgettingMessagesTwo.id).subscribe((response)=>{
-     
-      response.forEach(element => {
-        if(element.isRead==false){
-          element.isRead = true;
-        }
-      });
-      this.messages = response;
-    });
+    // });
+    // this._userPerRelationsService.getUserPerRelationForSenderAndReceiver(this.senderId,this.receiverId).subscribe((response)=>{
+    //   this.getUserPerRealtionForgettingMessagesOne = response;
+    //   console.log(response);
+      
+    // });
+    // this._userPerRelationsService.getUserPerRelationForSenderAndReceiver(this.receiverId,this.senderId).subscribe((response)=>{
+    //   this.getUserPerRealtionForgettingMessagesTwo = response;
+    //   console.log(response);
+      
+      
+    // })
+    // this._messagesService.getAllForBothUser(this.getUserPerRealtionForgettingMessagesOne.id,this.getUserPerRealtionForgettingMessagesTwo.id).subscribe((response)=>{
+    //   console.log(response);
+      
+    //   response.forEach(element => {
+    //     if(element.isRead==false){
+    //       element.isRead = true;
+    //     }
+    //   });
+    //   this.messages = response;
+    // });
     
   }
 
   sendMessage(){
     this.cmsg.messageContent = this.messageInput;
     this.cmsg.isRead = false;
-    this._userPerRelationsService.getUserPerRelationForSenderAndReceiver(this.senderId,this.receiverId).subscribe((response) =>{
-      this.cmsg.userPerRelationId = response.id;
-    });
+    // this._userPerRelationsService.getUserPerRelationForSenderAndReceiver(this.senderId,this.receiverId).subscribe((response) =>{
+    //   this.cmsg.userPerRelationId = response.id;
+    // });
+//     console.log(this.cmsg.userPerRelationId+" itsIdcsmg");
+    
+// console.log(this.cmsg.messageContent+" itsmessage");
 
     this._messagesService.create(this.cmsg).subscribe((response)=>{
       this.getMsg.id = response.id;
@@ -143,7 +196,9 @@ export class ChatsComponent extends PagedListingComponentBase<UserDto> {
   }
 
   onChangeInput(val:any){
-    this.message = val;
+    this.messageInput = val;
+    // console.log(val+" val");
+    
   }
 
   // createRole(): void {
