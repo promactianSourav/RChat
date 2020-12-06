@@ -26,14 +26,16 @@ namespace RChat.Messages
 
         public async Task<Message> CreateMessage(Message entity)
         {
-            var message = repositoryMessage.FirstOrDefault(x => x.Id == entity.Id && x.IsDeleted==false);
+            //var message = repositoryMessage.FirstOrDefault(x => x.Id == entity.Id && x.IsDeleted==false);
+            //var message = repositoryMessage.Get(entity.Id);
 
-            if (message != null)
-            {
-                throw new UserFriendlyException("Already Exist.");
-            }
-
-            return await repositoryMessage.InsertAsync(entity);
+            //if (message != null)
+            //{
+            //    throw new UserFriendlyException("Already Exist.");
+            //}
+            var messageId = await repositoryMessage.InsertAndGetIdAsync(entity);
+            var message = await GetMessageById(messageId);
+            return message;
         }
 
         public Task DeleteMessage(int id)
@@ -173,6 +175,12 @@ namespace RChat.Messages
             return await repositoryMessage.UpdateAsync(entity);
         }
 
+        public void UpdateSingleUnReadMessageToRead(int messageId)
+        {
+            var message = repositoryMessage.Get(messageId);
+            message.IsRead = true;
+        }
+
         [UnitOfWork]
         public void UpdateUnReadMessageToRead(int userPerRelationId)
         {
@@ -183,5 +191,6 @@ namespace RChat.Messages
                 m.IsRead = true;
             }
         }
+        
     }
 }

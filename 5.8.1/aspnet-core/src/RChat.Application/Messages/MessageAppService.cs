@@ -37,6 +37,7 @@ namespace RChat.Messages
             var entity = mapper.Map<CreateMessageInput, Message>(input);
             var output = await messageManager.CreateMessage(entity);
 
+            
             //int v2 = output.UserPerRelationId == null ? 1:output.UserPerRelationId;
             int v2 = output.UserPerRelationId ?? 0;
           
@@ -47,8 +48,8 @@ namespace RChat.Messages
                 
                 msg.MessageReceiverId =  userPerRelationManager.GetSingleUserPerRelation(v2).SenderId;
                 
-                msg.MessageUnReadCount = messageManager.GetAllListForUnReadMessages(v2).ToList().Count+1;
-
+                msg.MessageUnReadCount = messageManager.GetAllListForUnReadMessages(v2).ToList().Count;
+                msg.MessageId = output.Id;
                 long r = userPerRelationManager.GetSingleUserPerRelation(v2).SenderId ?? 0;
                 long s = userPerRelationManager.GetSingleUserPerRelation(v2).ReceiverId ?? 0;
                 msg.MessageCurrentUserPerRelationId = userPerRelationManager.GetUserPerRelationForSenderAndReceiverForMessage(s, r).Id;
@@ -118,6 +119,11 @@ namespace RChat.Messages
         public void UpdateUnReadMessageToRead(int userPerRelationId)
         {
             messageManager.UpdateUnReadMessageToRead(userPerRelationId);
+        }
+
+        public void UpdateSingleUnReadMessageToRead(int messageId)
+        {
+            messageManager.UpdateSingleUnReadMessageToRead(messageId);
         }
     }
 }

@@ -13,3 +13,30 @@
 .rightside {
     background: green;
 } */
+
+#notiIcon {
+    background-color: red;
+    border-radius: 25%;
+    margin-left: 5px;
+    color: white;
+    font-weight: bold;
+}
+
+
+/* .notiIcon1 {
+    background-color: red;
+    border-radius: 25%;
+    margin-left: 5px;
+    padding-right: 4px;
+    padding-left: 4px;
+    color: white;
+    font-weight: bold;
+}
+
+.notiIcon2 {
+    background-color: white;
+    border-radius: 25%;
+    margin-left: 5px;
+    color: red;
+    font-weight: bold;
+} */

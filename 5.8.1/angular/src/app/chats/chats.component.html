@@ -103,9 +103,9 @@
                                 }
                         ">
                                         <td (click)="startchat(user)" *ngIf='user.id !== senderId'>{{ user.userName }}
-                                            <div *ngIf='user.id === notiUserId'>
+                                            <span *ngIf='user.id===notiUserId' id="notiIcon">
                                                 {{count}}
-                                            </div>
+                                            </span>
 
                                         </td>
                                         <!-- <td>{{ user.fullName }}</td>

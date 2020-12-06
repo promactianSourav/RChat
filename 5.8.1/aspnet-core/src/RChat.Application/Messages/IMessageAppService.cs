@@ -10,6 +10,7 @@ namespace RChat.Messages
     {
         IEnumerable<GetMessageOutput> ListAll();
         void UpdateUnReadMessageToRead(int userPerRelationId);
+        void UpdateSingleUnReadMessageToRead(int messageId);
         IEnumerable<GetMessageOutput> GetAllForBothUser(int userPerRelationOne, int userPerRelationTwo);
         
     }

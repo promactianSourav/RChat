@@ -77,27 +77,32 @@ export class ChatsComponent extends PagedListingComponentBase<UserDto> {
       });
 
       this._chatService.signalReceived.subscribe((msg:MessageSignal)=>{
-        console.log("Your message arrived: "+msg);
-        console.log(msg.messageCurrentUserPerRelationId+"notcmsg");
-        console.log(msg.messageDescription);
-        console.log(msg.messageReceiverId);
-        console.log(msg.messageUnReadCount);
-        console.log(this.cmsg.userPerRelationId+"cmsg");
+        // console.log("Your message arrived: "+msg);
+        // console.log(msg.messageCurrentUserPerRelationId+"notcmsg");
+        // console.log(msg.messageDescription);
+        // console.log(msg.messageReceiverId);
+        // console.log(msg.messageUnReadCount);
+        // console.log(this.cmsg.userPerRelationId+"cmsg");
         
         
         
         if(this.cmsg.userPerRelationId==msg.messageCurrentUserPerRelationId){
           this.getSignalMsg = new GetMessageOutput();
-          this.getSignalMsg.id = 0;
+          this.getSignalMsg.id = msg.messageId;
           this.getSignalMsg.userPerRelationId = 0;
           this.getSignalMsg.isRead = true;
           this.getSignalMsg.messageContent = msg.messageDescription;
-          console.log(msg.messageDescription+"notimessage");
+          // console.log(msg.messageDescription+"notimessage");
           
           this.messages.push(this.getSignalMsg);
+          // console.log(msg.messageId+" messageId");
+          
+          this._messagesService.updateSingleUnReadMessageToRead(msg.messageId).subscribe((response)=>{
+
+          });
         }else{
           this.notiUserId = msg.messageReceiverId;
-          this.count = msg.messageUnReadCount.toString();
+          this.count = " "+msg.messageUnReadCount.toString()+" ";
           // console.log(this.notiUserId);
           // console.log(this.count);
           
@@ -143,7 +148,7 @@ export class ChatsComponent extends PagedListingComponentBase<UserDto> {
     
     const first = this._userPerRelationsService.create(this.userPerRelationForChatOne).pipe(
       map(response =>{
-        console.log(response);
+        // console.log(response);
         return response;
         
       }),
@@ -153,7 +158,7 @@ export class ChatsComponent extends PagedListingComponentBase<UserDto> {
 
       const second = this._userPerRelationsService.create(this.userPerRelationForChatTwo).pipe(
         map(response =>{
-          console.log(response);
+          // console.log(response);
           return response;
           
         }),
@@ -168,7 +173,7 @@ export class ChatsComponent extends PagedListingComponentBase<UserDto> {
           map(response =>{
             this.cmsg.userPerRelationId = response[0].id;
             this.countReverseUserPerRelationId = response[1].id;
-            console.log(response);
+            // console.log(response);
             return response;
           }),
             mergeMap(response => {
@@ -178,7 +183,7 @@ export class ChatsComponent extends PagedListingComponentBase<UserDto> {
               return forkJoin([third,fourth]);
             })
           ).subscribe(res =>{
-            console.log(res);
+            // console.log(res);
             this.count = "";
             // res[1].forEach(element => {
             //   if(element.isRead==false && element.userPerRelationId == this.countReverseUserPerRelationId){
@@ -223,7 +228,7 @@ export class ChatsComponent extends PagedListingComponentBase<UserDto> {
   }
 
   sendMessage(){
-    console.log(this.messageInput+"msgINput");
+    // console.log(this.messageInput+"msgINput");
     this.cmsg2 = new CreateMessageInput();
     this.cmsg2.messageContent = this.messageInput;
     this.cmsg2.isRead = false;

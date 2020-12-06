@@ -11,6 +11,7 @@ namespace RChat.Messages
         IEnumerable<Message> GetAllList();
         IEnumerable<Message> GetAllListForUnReadMessages(long userPerRelationId);
         void UpdateUnReadMessageToRead(int userPerRelationId);
+        void UpdateSingleUnReadMessageToRead(int messageId);
         IEnumerable<Message> GetAllForBothUser(int userPerRelationOne,int userPerRelationTwo);
         Task<Message> GetMessageById(int id);
 
