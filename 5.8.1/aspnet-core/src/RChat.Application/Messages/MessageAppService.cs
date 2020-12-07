@@ -46,13 +46,17 @@ namespace RChat.Messages
             {
                 MessageSignal msg = new MessageSignal();
                 
-                msg.MessageReceiverId =  userPerRelationManager.GetSingleUserPerRelation(v2).SenderId;
+                msg.MessageSenderId =  userPerRelationManager.GetSingleUserPerRelation(v2).SenderId;
+                msg.MessageReceiverId =  userPerRelationManager.GetSingleUserPerRelation(v2).ReceiverId;
                 
                 msg.MessageUnReadCount = messageManager.GetAllListForUnReadMessages(v2).ToList().Count;
                 msg.MessageId = output.Id;
                 long r = userPerRelationManager.GetSingleUserPerRelation(v2).SenderId ?? 0;
                 long s = userPerRelationManager.GetSingleUserPerRelation(v2).ReceiverId ?? 0;
                 msg.MessageCurrentUserPerRelationId = userPerRelationManager.GetUserPerRelationForSenderAndReceiverForMessage(s, r).Id;
+                //long v3 = msg.MessageCurrentUserPerRelationId ?? 0;
+                //msg.MessageReceiverId = userPerRelationManager.GetSingleUserPerRelation((int)v3).ReceiverId;
+
                 msg.MessageDescription = output.MessageContent;
                 await hubContext.Clients.All.SendAsync("checkMessage", msg);
             }

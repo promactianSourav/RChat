@@ -7,6 +7,7 @@ namespace RChat.Messages.Dto
     public class MessageSignal
     {
         public long? MessageReceiverId { get; set; }
+        public long? MessageSenderId { get; set; }
         public long MessageId { get; set; }
         public long MessageUnReadCount { get; set; }
         public long? MessageCurrentUserPerRelationId { get; set; }

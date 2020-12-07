@@ -1,18 +1,20 @@
-.leftside,
-.rightside {
+.leftside {
     height: 100vh;
     width: 100%;
-}
-
-
-/* 
-.leftside {
-    background: red;
+    overflow: hidden;
 }
 
 .rightside {
-    background: green;
-} */
+    /* height: 500px; */
+    width: 100%;
+    /* overflow: auto; */
+}
+
+.row-selected {
+    background-color: seagreen;
+    color: white;
+    font-weight: bold;
+}
 
 #notiIcon {
     background-color: red;

@@ -21,6 +21,7 @@ class PagedUsersRequestDto extends PagedRequestDto {
 })
 export class ChatsComponent extends PagedListingComponentBase<UserDto> {
   
+  blank:boolean = false;
   users: UserDto[] = [];
   messages:GetMessageOutput[] = [];
   getMsg:GetMessageOutput;
@@ -36,10 +37,13 @@ export class ChatsComponent extends PagedListingComponentBase<UserDto> {
    countReverseUserPerRelationId:number;
   senderId:number = abp.session.userId;
   receiverId:number = null;
+  loggedInUserName:string = "";
 
   noti:string="";
   count:string="";
   notiUserId:number=0;
+  messageOwner:string = "Me";
+  whomYouChat:string = "";
   
   keyword = '';
 
@@ -73,8 +77,15 @@ export class ChatsComponent extends PagedListingComponentBase<UserDto> {
       )
       .subscribe((result: UserDtoPagedResultDto) => {
         this.users = result.items;
+        result.items.forEach(element => {
+          if(element.id==abp.session.userId){
+            this.loggedInUserName = element.name;
+          }
+        });
         this.showPaging(result, pageNumber);
       });
+
+
 
       this._chatService.signalReceived.subscribe((msg:MessageSignal)=>{
         // console.log("Your message arrived: "+msg);
@@ -89,11 +100,11 @@ export class ChatsComponent extends PagedListingComponentBase<UserDto> {
         if(this.cmsg.userPerRelationId==msg.messageCurrentUserPerRelationId){
           this.getSignalMsg = new GetMessageOutput();
           this.getSignalMsg.id = msg.messageId;
-          this.getSignalMsg.userPerRelationId = 0;
+          this.getSignalMsg.userPerRelationId = this.countReverseUserPerRelationId;
           this.getSignalMsg.isRead = true;
           this.getSignalMsg.messageContent = msg.messageDescription;
           // console.log(msg.messageDescription+"notimessage");
-          
+          // this.messageOwner = this.whomYouChat;
           this.messages.push(this.getSignalMsg);
           // console.log(msg.messageId+" messageId");
           
@@ -101,8 +112,11 @@ export class ChatsComponent extends PagedListingComponentBase<UserDto> {
 
           });
         }else{
-          this.notiUserId = msg.messageReceiverId;
-          this.count = " "+msg.messageUnReadCount.toString()+" ";
+          if(abp.session.userId==msg.messageReceiverId){
+            this.notiUserId = msg.messageSenderId;
+            this.count = msg.messageUnReadCount.toString();
+          }
+         
           // console.log(this.notiUserId);
           // console.log(this.count);
           
@@ -135,6 +149,7 @@ export class ChatsComponent extends PagedListingComponentBase<UserDto> {
 
 
   startchat(user:UserDto){
+    this.blank=true;
     // abp.message.info('StartChat:'+user.name);
     this.senderId = abp.session.userId;
     this.receiverId = user.id;
@@ -145,7 +160,7 @@ export class ChatsComponent extends PagedListingComponentBase<UserDto> {
 
     this.userPerRelationForChatTwo.senderId = this.receiverId;
     this.userPerRelationForChatTwo.receiverId = this.senderId;
-    
+    this.whomYouChat = user.name;
     const first = this._userPerRelationsService.create(this.userPerRelationForChatOne).pipe(
       map(response =>{
         // console.log(response);
@@ -247,6 +262,7 @@ this.getMsg.messageContent = this.messageInput;
 this.getMsg.userPerRelationId = this.cmsg2.userPerRelationId;
 this.getMsg.isRead = true;
 this.messages.push(this.getMsg);
+
     this._messagesService.create(this.cmsg2).subscribe((response)=>{
      
     })

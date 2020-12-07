@@ -3,81 +3,16 @@
         <div class="container-12">
             <div class="row">
                 <div class="col-6">
-                    <h1>{{ "Chats" | localize }}</h1>
+                    <h1>RChats({{loggedInUserName}})</h1>
                 </div>
-                <!-- <div class="col-6 text-right">
-                    <a href="javascript:;" class="btn bg-blue" (click)="createUser()">
-                        <i class="fa fa-plus-square"></i> {{ "Create" | localize }}
-                    </a>
-                </div> -->
+
             </div>
         </div>
     </section>
     <section class="content px-2">
         <div class="container-fluid">
             <div class="row">
-                <!-- <div class="card-header">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <button type="button" class="btn bg-blue" (click)="getDataPage(1)">
-                <i class="fas fa-search"></i>
-              </button>
-                        </div>
-                        <input type="text" class="form-control" name="keyword" [placeholder]="'SearchWithThreeDot' | localize" [(ngModel)]="keyword" (keyup.enter)="getDataPage(1)" />
-                        <div class="input-group-append">
-                            <button type="button" class="btn btn-default" (click)="advancedFiltersVisible = !advancedFiltersVisible">
-                <i
-                  class="fas"
-                  [class.fa-angle-up]="advancedFiltersVisible"
-                  [class.fa-angle-down]="!advancedFiltersVisible"
-                ></i>
-              </button>
-                        </div>
-                    </div>
-                    <div *ngIf="advancedFiltersVisible" class="card mb-0 mt-1">
-                        <div class="card-body">
-                            <form class="form-horizontal">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group row mb-0">
-                                            <label class="col-md-3 col-form-label">
-                        {{ "IsActive" | localize }}
-                      </label>
-                                            <div class="col-md-9 pt-2">
-                                                <div class="custom-control custom-radio d-inline">
-                                                    <input type="radio" class="custom-control-input" id="isActiveAll" name="isActive" [(ngModel)]="isActive" [value]="undefined" checked />
-                                                    <label class="custom-control-label" for="isActiveAll">
-                            {{ "All" | localize }}
-                          </label>
-                                                </div>
-                                                <div class="custom-control custom-radio d-inline mx-3">
-                                                    <input type="radio" class="custom-control-input" id="isActiveActive" name="isActive" [(ngModel)]="isActive" [value]="true" />
-                                                    <label class="custom-control-label" for="isActiveActive">
-                            {{ "Yes" | localize }}
-                          </label>
-                                                </div>
-                                                <div class="custom-control custom-radio d-inline">
-                                                    <input type="radio" class="custom-control-input" id="isActivePassive" name="isActive" [(ngModel)]="isActive" [value]="false" />
-                                                    <label class="custom-control-label" for="isActivePassive">
-                            {{ "No" | localize }}
-                          </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="card-footer">
-                            <button type="button" class="btn bg-blue" (click)="getDataPage(1)">
-                {{ "Search" | localize }}
-              </button>
-                            <button type="button" class="btn btn-default float-right" (click)="clearFilters()">
-                {{ "Clear" | localize }}
-              </button>
-                        </div>
-                    </div>
-                </div> -->
+
                 <div class="col-2">
                     <div class="leftside no-gutters">
                         <div class="card-body table-responsive p-0">
@@ -85,10 +20,7 @@
                                 <thead class="bg-light">
                                     <tr>
                                         <th>{{ "UserName" | localize }}</th>
-                                        <!-- <th>{{ "FullName" | localize }}</th>
-                                        <th>{{ "EmailAddress" | localize }}</th>
-                                        <th>{{ "IsActive" | localize }}</th>
-                                        <th style="width: 310px;">{{ "Actions" | localize }}</th> -->
+
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -102,80 +34,245 @@
                                   totalItems: totalItems
                                 }
                         ">
-                                        <td (click)="startchat(user)" *ngIf='user.id !== senderId'>{{ user.userName }}
-                                            <span *ngIf='user.id===notiUserId' id="notiIcon">
+                                        <td (click)="startchat(user)" *ngIf='user.id !== senderId' [ngClass]="{'row-selected':user.name===whomYouChat}">{{ user.userName }}
+                                            <span *ngIf='user.id===notiUserId' class="float-right" id="notiIcon">
                                                 {{count}}
                                             </span>
 
                                         </td>
-                                        <!-- <td>{{ user.fullName }}</td>
-                                        <td>{{ user.emailAddress }}</td>
-                                        <td>
-                                            <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" disabled [checked]="user.isActive" />
-                                                <label class="custom-control-label"></label>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <button type="button" class="btn btn-sm bg-secondary" (click)="editUser(user)">
-                            <i class="fas fa-pencil-alt"></i>
-                            {{ "Edit" | localize }}
-                          </button>
-                                            <button type="button" class="btn btn-sm bg-danger mx-2" (click)="delete(user)">
-                            <i class="fas fa-trash"></i>
-                            {{ "Delete" | localize }}
-                          </button>
-                                            <button type="button" class="btn btn-sm bg-secondary" (click)="resetPassword(user)">
-                            <i class="fas fa-lock"></i>
-                            {{ "ResetPassword" | localize }}
-                          </button>
-                                        </td> -->
+
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
+                <div class="col-10 justify-content-between text-center" *ngIf="!blank">
+                    <h2>***Select friend to chat***</h2>
+                </div>
 
+                <div class="col-10" *ngIf="blank">
+                    <div class="card-body table-responsive p-0">
+                        <h3><b>{{whomYouChat}}</b></h3>
+                    </div>
+                    <div class="rightside no-gutters" style="overflow: scroll; height: 500px;" #scrollMe [scrollTop]="scrollMe.scrollHeight">
 
-                <div class="col-10">
-                    <div class="rightside no-gutters">
-                        <div class="card-body table-responsive p-0">Welcome</div>
-                        <div *ngFor='let msg of messages'>
+                        <!-- <div *ngFor='let msg of messages'>
                             {{msg.messageContent}}
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" name="message" id="message" (input)="onChangeInput($event.target.value)" />
+                        </div> -->
+                        <ul class="list-unstyled chat" *ngFor='let msg of messages'>
+                            <li class="d-flex justify-content-between">
+                                <div class="chat-body white ml-2 z-depth-1">
+                                    <div class="header">
+                                        <span *ngIf='msg.userPerRelationId !== countReverseUserPerRelationId'><b>Me : </b></span>
+                                        <span *ngIf='msg.userPerRelationId === countReverseUserPerRelationId'><b>{{ whomYouChat }} : </b></span> {{msg.messageContent}}
 
-                            </div>
-                            <div class="col-md-3">
-                                <button class="btn btn-success" (click)="sendMessage()"> send</button>
-                            </div>
+                                        <!-- <div class="text-muted"><i class="far fa-clock"></i> {{msg.creationTime}}</div> -->
+                                    </div>
+
+
+                                </div>
+                            </li>
+                            <hr class="w-100">
+                        </ul>
+
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" name="message" #filterInputMessage id="message" (input)="onChangeInput($event.target.value)" />
+
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-success" (click)="sendMessage(); filterInputMessage.value = ''"> send</button>
                         </div>
                     </div>
                 </div>
-                <!-- <div class="card-footer bg-light border-top">
-                    <div class="row">
-                        <div class="col-sm-4 col-12 text-sm-left text-center">
-                            <button class="btn btn-secondary" (click)="refresh()">
-                <i class="fas fa-redo-alt"></i>
-              </button>
-                        </div>
-                        <div class="col-sm-4 col-12 text-center">
-                            <p class="mb-0 my-2">
-                                {{ "TotalRecordsCount" | localize: totalItems }}
-                            </p>
-                        </div>
-                        <div class="col-sm-4 col-12">
-                            <div class="float-sm-right m-auto">
-                                <abp-pagination-controls id="server" (pageChange)="getDataPage($event)">
-                                </abp-pagination-controls>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
+
             </div>
         </div>
     </section>
+</div>
+
+<div class="card grey lighten-3 chat-room" hidden>
+    <div class="card-body">
+
+        <!-- Grid row -->
+        <div class="row px-lg-2 px-2">
+
+            <!-- Grid column -->
+            <div class="col-md-6 col-xl-4 px-0">
+
+                <h6 class="font-weight-bold mb-3 text-center text-lg-left">Member</h6>
+                <div class="white z-depth-1 px-3 pt-3 pb-0">
+                    <ul class="list-unstyled friend-list" *ngFor="
+                    let user of users
+                      | paginate
+                        : {
+                            id: 'server',
+                            itemsPerPage: pageSize,
+                            currentPage: pageNumber,
+                            totalItems: totalItems
+                          }
+                  ">
+                        <li class="active grey lighten-3 p-2">
+                            <a href="#" class="d-flex justify-content-between">
+                                <!-- <img src="https://mdbootstrap.com/img/Photos/Avatars/avatar-8.jpg" alt="avatar" class="avatar rounded-circle d-flex align-self-center mr-2 z-depth-1"> -->
+                                <div class="text-small" (click)="startchat(user)" *ngIf='user.id !== senderId'>
+                                    <strong>{{ user.userName }}</strong>
+                                    <!-- <p class="last-message text-muted">Hello, Are you there?</p> -->
+                                </div>
+                                <div class="chat-footer">
+                                    <!-- <p class="text-smaller text-muted mb-0">Just now</p> -->
+                                    <span *ngIf='user.id===notiUserId' class="badge badge-danger float-right">
+                                        {{count}}
+                                    </span>
+                                </div>
+                            </a>
+                        </li>
+                        <!-- <li class="p-2">
+                            <a href="#" class="d-flex justify-content-between">
+                                <img src="https://mdbootstrap.com/img/Photos/Avatars/avatar-1.jpg" alt="avatar" class="avatar rounded-circle d-flex align-self-center mr-2 z-depth-1">
+                                <div class="text-small">
+                                    <strong>Danny Smith</strong>
+                                    <p class="last-message text-muted">Lorem ipsum dolor sit.</p>
+                                </div>
+                                <div class="chat-footer">
+                                    <p class="text-smaller text-muted mb-0">5 min ago</p>
+                                    <span class="text-muted float-right"><i class="fas fa-mail-reply" aria-hidden="true"></i></span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="p-2">
+                            <a href="#" class="d-flex justify-content-between">
+                                <img src="https://mdbootstrap.com/img/Photos/Avatars/avatar-2.jpg" alt="avatar" class="avatar rounded-circle d-flex align-self-center mr-2 z-depth-1">
+                                <div class="text-small">
+                                    <strong>Alex Steward</strong>
+                                    <p class="last-message text-muted">Lorem ipsum dolor sit.</p>
+                                </div>
+                                <div class="chat-footer">
+                                    <p class="text-smaller text-muted mb-0">Yesterday</p>
+                                    <span class="text-muted float-right"><i class="fas fa-mail-reply" aria-hidden="true"></i></span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="p-2">
+                            <a href="#" class="d-flex justify-content-between">
+                                <img src="https://mdbootstrap.com/img/Photos/Avatars/avatar-3.jpg" alt="avatar" class="avatar rounded-circle d-flex align-self-center mr-2 z-depth-1">
+                                <div class="text-small">
+                                    <strong>Ashley Olsen</strong>
+                                    <p class="last-message text-muted">Lorem ipsum dolor sit.</p>
+                                </div>
+                                <div class="chat-footer">
+                                    <p class="text-smaller text-muted mb-0">Yesterday</p>
+                                    <span class="text-muted float-right"><i class="fas fa-mail-reply" aria-hidden="true"></i></span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="p-2">
+                            <a href="#" class="d-flex justify-content-between">
+                                <img src="https://mdbootstrap.com/img/Photos/Avatars/avatar-4.jpg" alt="avatar" class="avatar rounded-circle d-flex align-self-center mr-2 z-depth-1">
+                                <div class="text-small">
+                                    <strong>Kate Moss</strong>
+                                    <p class="last-message text-muted">Lorem ipsum dolor sit.</p>
+                                </div>
+                                <div class="chat-footer">
+                                    <p class="text-smaller text-muted mb-0">Yesterday</p>
+                                    <span class="text-muted float-right"><i class="fas fa-mail-reply" aria-hidden="true"></i></span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="p-2">
+                            <a href="#" class="d-flex justify-content-between">
+                                <img src="https://mdbootstrap.com/img/Photos/Avatars/avatar-5.jpg" alt="avatar" class="avatar rounded-circle d-flex align-self-center mr-2 z-depth-1">
+                                <div class="text-small">
+                                    <strong>Lara Croft</strong>
+                                    <p class="last-message text-muted">Lorem ipsum dolor sit.</p>
+                                </div>
+                                <div class="chat-footer">
+                                    <p class="text-smaller text-muted mb-0">Yesterday</p>
+                                    <span class="text-muted float-right"><i class="fas fa-mail-reply" aria-hidden="true"></i></span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="p-2">
+                            <a href="#" class="d-flex justify-content-between">
+                                <img src="https://mdbootstrap.com/img/Photos/Avatars/avatar-6.jpg" alt="avatar" class="avatar rounded-circle d-flex align-self-center mr-2 z-depth-1">
+                                <div class="text-small">
+                                    <strong>Brad Pitt</strong>
+                                    <p class="last-message text-muted">Lorem ipsum dolor sit.</p>
+                                </div>
+                                <div class="chat-footer">
+                                    <p class="text-smaller text-muted mb-0">5 min ago</p>
+                                    <span class="text-muted float-right"><i class="fas fa-check" aria-hidden="true"></i></span>
+                                </div>
+                            </a>
+                        </li> -->
+                    </ul>
+                </div>
+
+            </div>
+            <!-- Grid column -->
+
+            <!-- Grid column -->
+            <div class="col-md-6 col-xl-8 pl-md-3 px-lg-auto px-0">
+
+                <div class="chat-message">
+
+                    <ul class="list-unstyled chat" *ngFor='let msg of messages'>
+                        <li class="d-flex justify-content-between mb-4">
+                            <div class="chat-body white p-3 ml-2 z-depth-1">
+                                <div class="header">
+                                    <strong class="primary-font">{{ user.userName }}</strong>
+                                    <small class="pull-right text-muted"><i class="far fa-clock"></i> 12 mins ago</small>
+                                </div>
+                                <hr class="w-100">
+                                <p class="mb-0">
+                                    {{msg.messageContent}}
+                                </p>
+                            </div>
+                        </li>
+                        <!-- <li class="d-flex justify-content-between mb-4">
+                            <div class="chat-body white p-3 z-depth-1">
+                                <div class="header">
+                                    <strong class="primary-font">Lara Croft</strong>
+                                    <small class="pull-right text-muted"><i class="far fa-clock"></i> 13 mins ago</small>
+                                </div>
+                                <hr class="w-100">
+                                <p class="mb-0">
+                                    Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.
+                                </p>
+                            </div>
+                            <img src="https://mdbootstrap.com/img/Photos/Avatars/avatar-5.jpg" alt="avatar" class="avatar rounded-circle mr-0 ml-3 z-depth-1">
+                        </li>
+                        <li class="d-flex justify-content-between mb-4 pb-3">
+                            <img src="https://mdbootstrap.com/img/Photos/Avatars/avatar-6.jpg" alt="avatar" class="avatar rounded-circle mr-2 ml-lg-3 ml-0 z-depth-1">
+                            <div class="chat-body white p-3 ml-2 z-depth-1">
+                                <div class="header">
+                                    <strong class="primary-font">Brad Pitt</strong>
+                                    <small class="pull-right text-muted"><i class="far fa-clock"></i> 12 mins ago</small>
+                                </div>
+                                <hr class="w-100">
+                                <p class="mb-0">
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                                </p>
+                            </div>
+                        </li> -->
+                    </ul>
+
+                    <div class="form-group basic-textarea">
+                        <textarea class="form-control pl-2 my-0" id="exampleFormControlTextarea2" rows="3" placeholder="Type your message here..." (input)="onChangeInput($event.target.value)"></textarea>
+                    </div>
+
+                    <button type="button" class="btn btn-info btn-rounded btn-sm waves-effect waves-light float-right" (click)="sendMessage()">Send</button>
+
+
+                </div>
+
+            </div>
+            <!-- Grid column -->
+
+        </div>
+        <!-- Grid row -->
+
+    </div>
 </div>
