@@ -8,6 +8,7 @@ import { PagedListingComponentBase, PagedRequestDto } from '@shared/paged-listin
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { finalize, map, mergeMap } from 'rxjs/operators';
 import { forkJoin } from 'rxjs';
+import * as moment from 'moment';
 
 class PagedUsersRequestDto extends PagedRequestDto {
   keyword: string;
@@ -80,9 +81,11 @@ export class ChatsComponent extends PagedListingComponentBase<UserDto> {
       )
       .subscribe((result: UserDtoPagedResultDto) => {
         this.users = result.items;
+        // moment.defaultFormat = "DD.MM.YYYY HH:mm";
         result.items.forEach(element => {
           this.userCountObject = new UserCount();
           this.userCountObject.userDto = element;
+         moment(this.userCountObject.userDto.creationTime).utc().toDate();
           this.userCountObject.userUnReadCount = 0;
           this.userCounts.push(this.userCountObject);
           if(element.id==abp.session.userId){
@@ -109,6 +112,7 @@ export class ChatsComponent extends PagedListingComponentBase<UserDto> {
           this.getSignalMsg.id = msg.messageId;
           this.getSignalMsg.userPerRelationId = this.countReverseUserPerRelationId;
           this.getSignalMsg.isRead = true;
+          this.getSignalMsg.creationTime = moment(Date.now());
           this.getSignalMsg.messageContent = msg.messageDescription;
           // console.log(msg.messageDescription+"notimessage");
           // this.messageOwner = this.whomYouChat;
@@ -278,6 +282,7 @@ this.getMsg.id = 0;
 this.getMsg.messageContent = this.messageInput;
 this.getMsg.userPerRelationId = this.cmsg2.userPerRelationId;
 this.getMsg.isRead = true;
+this.getMsg.creationTime = moment(Date.now());
 this.messages.push(this.getMsg);
 
     this._messagesService.create(this.cmsg2).subscribe((response)=>{

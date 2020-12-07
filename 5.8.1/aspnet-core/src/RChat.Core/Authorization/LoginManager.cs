@@ -10,6 +10,7 @@ using Abp.Zero.Configuration;
 using RChat.Authorization.Roles;
 using RChat.Authorization.Users;
 using RChat.MultiTenancy;
+using System.Threading.Tasks;
 
 namespace RChat.Authorization
 {
@@ -41,5 +42,14 @@ namespace RChat.Authorization
                   claimsPrincipalFactory)
         {
         }
+
+        //public override Task<AbpLoginResult<Tenant, User>> LoginAsync(string userNameOrEmailAddress, string plainPassword, string tenancyName = null, bool shouldLockout = true)
+        //{
+        //    return base.LoginAsync(userNameOrEmailAddress, plainPassword, tenancyName, shouldLockout);
+        //}
+        //public Task<AbpLoginResult<Tenant, User>> LoginNameAsync(string userNameOrEmailAddress, string plainPassword, string tenancyName = null, bool shouldLockout = true)
+        //{
+
+        //}
     }
 }

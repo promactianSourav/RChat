@@ -3,7 +3,7 @@
         <div class="container-12">
             <div class="row">
                 <div class="col-6">
-                    <h1>RChats({{loggedInUserName}})</h1>
+                    <h1>RChats (Me:{{loggedInUserName}})</h1>
                 </div>
 
             </div>
@@ -34,7 +34,8 @@
                                   totalItems: totalItems
                                 }
                         ">
-                                        <td (click)="startchat(user.userDto)" *ngIf='user.userDto.id !== senderId' [ngClass]="{'row-selected':user.userDto.name===whomYouChat}">{{ user.userDto.userName }}
+                                        <td (click)="startchat(user.userDto)" *ngIf='user.userDto.id !== senderId' [ngClass]="{'row-selected':user.userDto.name===whomYouChat}">
+                                            {{ user.userDto.userName }}
                                             <span [hidden]="user.userUnReadCount==0" class="float-right" id="notiIcon">
                                                 {{user.userUnReadCount}}
                                             </span>
@@ -66,8 +67,10 @@
                                     <div class="header">
                                         <span *ngIf='msg.userPerRelationId !== countReverseUserPerRelationId'><b>Me : </b></span>
                                         <span *ngIf='msg.userPerRelationId === countReverseUserPerRelationId'><b>{{ whomYouChat }} : </b></span> {{msg.messageContent}}
+                                        <div>
+                                            <small class="text-muted"><i class="far fa-clock"></i> {{msg.creationTime | date:'yyyy-MM-dd HH:mm:ss a'}}</small>
+                                        </div>
 
-                                        <!-- <div class="text-muted"><i class="far fa-clock"></i> {{msg.creationTime}}</div> -->
                                     </div>
 
 

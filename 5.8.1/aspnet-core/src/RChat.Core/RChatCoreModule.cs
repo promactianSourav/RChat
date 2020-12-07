@@ -3,6 +3,7 @@ using Abp.Reflection.Extensions;
 using Abp.Timing;
 using Abp.Zero;
 using Abp.Zero.Configuration;
+using RChat.Authorization;
 using RChat.Authorization.Roles;
 using RChat.Authorization.Users;
 using RChat.Configuration;
@@ -18,6 +19,7 @@ namespace RChat
         public override void PreInitialize()
         {
             Configuration.Auditing.IsEnabledForAnonymousUsers = true;
+            Configuration.Modules.Zero().UserManagement.ExternalAuthenticationSources.Add<MyExternalAuthSource>();
 
             // Declare entity types
             Configuration.Modules.Zero().EntityTypes.Tenant = typeof(Tenant);
