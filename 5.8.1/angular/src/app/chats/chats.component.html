@@ -25,7 +25,7 @@
                                 </thead>
                                 <tbody>
                                     <tr *ngFor="
-                          let user of users
+                          let user of userCounts
                             | paginate
                               : {
                                   id: 'server',
@@ -34,11 +34,11 @@
                                   totalItems: totalItems
                                 }
                         ">
-                                        <td (click)="startchat(user)" *ngIf='user.id !== senderId' [ngClass]="{'row-selected':user.name===whomYouChat}">{{ user.userName }}
-                                            <span *ngIf='user.id===notiUserId' class="float-right" id="notiIcon">
-                                                {{count}}
+                                        <td (click)="startchat(user.userDto)" *ngIf='user.userDto.id !== senderId' [ngClass]="{'row-selected':user.userDto.name===whomYouChat}">{{ user.userDto.userName }}
+                                            <span [hidden]="user.userUnReadCount==0" class="float-right" id="notiIcon">
+                                                {{user.userUnReadCount}}
                                             </span>
-
+                                            <!-- 'user.userDto.id===notiUserId' -->
                                         </td>
 
                                     </tr>

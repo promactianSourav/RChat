@@ -1,3 +1,4 @@
+import { UserCount } from './../../shared/Models/UserCount';
 import { MessageSignal } from './../../shared/Models/MessageSignal';
 import { ChatServiceService } from './../../shared/services/chat-service.service';
 import { UserDto, UserServiceProxy, UserPerRelationServiceProxy, MessageServiceProxy, UserDtoPagedResultDto, GetMessageOutput, CreateMessageInput, CreateUserPerRelationInput, GetUserPerRelationOutput } from './../../shared/service-proxies/service-proxies';
@@ -23,6 +24,8 @@ export class ChatsComponent extends PagedListingComponentBase<UserDto> {
   
   blank:boolean = false;
   users: UserDto[] = [];
+  userCounts:UserCount[] = [];
+  userCountObject:UserCount;
   messages:GetMessageOutput[] = [];
   getMsg:GetMessageOutput;
   getSignalMsg:GetMessageOutput;
@@ -78,6 +81,10 @@ export class ChatsComponent extends PagedListingComponentBase<UserDto> {
       .subscribe((result: UserDtoPagedResultDto) => {
         this.users = result.items;
         result.items.forEach(element => {
+          this.userCountObject = new UserCount();
+          this.userCountObject.userDto = element;
+          this.userCountObject.userUnReadCount = 0;
+          this.userCounts.push(this.userCountObject);
           if(element.id==abp.session.userId){
             this.loggedInUserName = element.name;
           }
@@ -114,6 +121,11 @@ export class ChatsComponent extends PagedListingComponentBase<UserDto> {
         }else{
           if(abp.session.userId==msg.messageReceiverId){
             this.notiUserId = msg.messageSenderId;
+            this.userCounts.forEach(element => {
+              if(element.userDto.id==msg.messageSenderId){
+                element.userUnReadCount=msg.messageUnReadCount;
+              }
+            });
             this.count = msg.messageUnReadCount.toString();
           }
          
@@ -154,7 +166,12 @@ export class ChatsComponent extends PagedListingComponentBase<UserDto> {
     this.senderId = abp.session.userId;
     this.receiverId = user.id;
     this.user = user;
-
+    this.userCounts.forEach(element => {
+      if(element.userDto.id==user.id){
+        element.userUnReadCount=0;
+        
+      }
+    });
     this.userPerRelationForChatOne.senderId = this.senderId;
     this.userPerRelationForChatOne.receiverId = this.receiverId;
 
